@@ -1,0 +1,6 @@
+# serverList format - host:port:displayName
+# enter minecraft server's ip and port on serverList
+serverList:
+  - localhost:11111:main
+port: 8888
+websocket-port: 10594

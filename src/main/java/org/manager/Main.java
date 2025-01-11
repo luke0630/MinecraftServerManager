@@ -1,7 +1,18 @@
 package org.manager;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.manager.WebSocket.LunchWebSocketServer;
+
 public class Main {
+    @Getter
+    private static Data data = new Data();
+    @Getter
+    private static LunchWebSocketServer webSocketServer;
+
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        YamlWriter.createConfig();
+        YamlWriter.readConfig(() -> WebServer.startServer(data.getPort()));
+        webSocketServer = LunchWebSocketServer.startServer();
     }
 }
