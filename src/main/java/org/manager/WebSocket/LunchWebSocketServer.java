@@ -14,6 +14,29 @@ import java.util.*;
 public class LunchWebSocketServer extends WebSocketServer {
     static Map<String, WebSocket> serverList = new HashMap<>();
 
+    public static Boolean isOnline(String serverName) {
+        return serverList.containsKey(serverName);
+    }
+
+    public void broadcast(String message) {
+        for (WebSocket client : serverList.values()) {
+            try {
+                if(client.isOpen()) {
+                    client.send(message);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void broadcastWithoutTarget(String target, String message) {
+        for(Map.Entry<String, WebSocket> entry : serverList.entrySet()) {
+            if(entry.getKey().equals(target)) continue;
+            sendMessageToClient(entry.getKey(), message);
+        }
+    }
+
     @Override
     public void onOpen(org.java_websocket.WebSocket webSocket, ClientHandshake clientHandshake) {
         try {
