@@ -12,6 +12,7 @@ import java.net.InetSocketAddress;
 import java.util.*;
 
 public class LunchWebSocketServer extends WebSocketServer {
+    @Getter
     static Map<String, WebSocket> serverList = new HashMap<>();
 
     public static Boolean isOnline(String serverName) {
