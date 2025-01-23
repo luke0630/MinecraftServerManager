@@ -61,13 +61,6 @@ public class WebServer {
                     } else {
                         System.out.println("サーバーリストに存在しないサーバーからのリクエストです");
                     }
-
-                    String response = "";
-                    exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
-                    exchange.sendResponseHeaders(200, response.getBytes().length);
-                    try (OutputStream os = exchange.getResponseBody()) {
-                        os.write(response.getBytes());
-                    }
                 } else {
                     jsonResponse = serverDataJson.toString();
                     for(String serverName : serverDataJson.keySet()) {
@@ -79,6 +72,13 @@ public class WebServer {
                             jsonResponse = serverDataJson.toString();
                         }
                     }
+                }
+                exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
+                byte[] responseBytes = jsonResponse.getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(200, responseBytes.length);
+
+                try(OutputStream os = exchange.getResponseBody()) {
+                    os.write(jsonResponse.getBytes());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
