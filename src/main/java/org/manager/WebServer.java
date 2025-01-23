@@ -173,6 +173,7 @@ public class WebServer {
 
                     String response = "サーバーリストにあなたのサーバーアドレスは存在しなかったため認証されませんでした";
 
+                    int status;
                     Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
                     if(serverInfo != null) {
                         // レスポンスでwebsocketのサーバーのアドレスを教える
@@ -193,11 +194,15 @@ public class WebServer {
                         serverAddress.put("name", serverInfo.name());
                         serverAddress.put("displayName", serverInfo.displayName());
                         response = serverAddress.toString();
+                        status = 200;
+                        System.out.printf("%s が認証されました。 (%s:%s)%n", serverInfo.name(), host, port);
+                    } else {
+                        status = 400;
                     }
 
                     exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
                     byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
-                    exchange.sendResponseHeaders(200, responseBytes.length);
+                    exchange.sendResponseHeaders(status, responseBytes.length);
 
                     try (OutputStream os = exchange.getResponseBody()) {
                         os.write(responseBytes);
