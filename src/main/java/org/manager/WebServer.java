@@ -165,7 +165,7 @@ public class WebServer {
                     String requestBody = new String(exchange.getRequestBody().readAllBytes());
 
                     JSONObject jsonResult = new JSONObject(requestBody);
-                    String host = inetSocketAddress.getHostName();
+                    String host = inetSocketAddress.getAddress().getHostAddress();
                     String port = String.valueOf(jsonResult.getInt("port"));
 
                     String response = "サーバーリストにあなたのサーバーアドレスは存在しなかったため認証されませんでした";
