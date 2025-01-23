@@ -1,7 +1,6 @@
 package org.manager;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.manager.WebSocket.LunchWebSocketServer;
 
 public class Main {
