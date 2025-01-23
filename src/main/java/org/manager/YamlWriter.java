@@ -4,7 +4,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,10 +45,11 @@ public class YamlWriter {
                             String host = splitString[0];
                             String port = splitString[1];
                             String name = splitString[2];
+                            String displayName = splitString[3];
 
                             resultData.addServerInfoList(
                                     new Data.serverInfo(
-                                        host, port, name
+                                        host, port, name, displayName
                                     )
                             );
                         }
