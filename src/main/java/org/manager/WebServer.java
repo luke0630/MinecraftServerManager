@@ -17,6 +17,9 @@ public class WebServer {
     static JSONObject serverDataJson = new JSONObject();
 
     public static void startServer(int port) {
+        for(Data.serverInfo info : Main.getData().getServerInfoList()) {
+            serverDataJson.put(info.name(), new JSONObject().put("isOnline", false));
+        }
         HttpServer server;
         try {
             server = HttpServer.create(new InetSocketAddress(port), 0);
