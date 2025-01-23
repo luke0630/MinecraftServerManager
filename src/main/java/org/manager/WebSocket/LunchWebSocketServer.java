@@ -75,7 +75,7 @@ public class LunchWebSocketServer extends WebSocketServer {
         JSONObject message = new JSONObject(s);
 
         WebSocketClient.MessageType type = WebSocketClient.MessageType.valueOf(message.getString("type"));
-        String content = message.getString("content");
+        JSONObject content = message.getJSONObject("content");
 
         String serverName = "";
         String serverDisplayName = "";
@@ -102,9 +102,8 @@ public class LunchWebSocketServer extends WebSocketServer {
             case REGISTER -> {
                 InetSocketAddress inetSocketAddress = webSocket.getRemoteSocketAddress();
 
-                JSONObject jsonResult = new JSONObject(content);
                 String host = inetSocketAddress.getHostString();
-                String port = String.valueOf(jsonResult.getInt("port"));
+                String port = String.valueOf(content.getInt("port"));
 
                 Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
                 if(serverInfo != null) {
