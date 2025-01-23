@@ -54,7 +54,10 @@ public class WebServer {
 
                     if(isContains) {
                         JSONObject serverData = new JSONObject(requestBody);
-                        serverDataJson.put(serverInfo.name(), serverData);
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("serverData", serverData);
+                        jsonObject.put("isOnline", LunchWebSocketServer.isOnline(serverName));
+                        serverDataJson.put(serverInfo.name(), jsonObject);
                     } else {
                         System.out.println("サーバーリストに存在しないサーバーからのリクエストです");
                     }
@@ -66,12 +69,15 @@ public class WebServer {
                         os.write(response.getBytes());
                     }
                 } else {
-                    String jsonResponse = serverDataJson.toString();
-
-                    exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
-                    exchange.sendResponseHeaders(200, jsonResponse.length());
-                    try(OutputStream os = exchange.getResponseBody()) {
-                        os.write(jsonResponse.getBytes());
+                    jsonResponse = serverDataJson.toString();
+                    for(String serverName : serverDataJson.keySet()) {
+                        boolean isOnline = LunchWebSocketServer.isOnline(serverName);
+                        serverDataJson.getJSONObject(serverName).put("isOnline", isOnline);
+                        if(!isOnline) {
+                            serverDataJson.getJSONObject(serverName).remove("serverData");
+                        } else {
+                            jsonResponse = serverDataJson.toString();
+                        }
                     }
                 }
             } catch (IOException e) {
