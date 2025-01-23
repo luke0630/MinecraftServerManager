@@ -36,6 +36,7 @@ public class WebServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
+                String jsonResponse = "";
                 if ("POST".equals(exchange.getRequestMethod())) {
                     String requestBody = new String(exchange.getRequestBody().readAllBytes());
                     System.out.println("Received data: " + requestBody);
