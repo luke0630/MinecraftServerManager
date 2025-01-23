@@ -53,6 +53,12 @@ public class LunchWebSocketServer extends WebSocketServer {
     public void onClose(org.java_websocket.WebSocket webSocket, int i, String s, boolean b) {
         for(Map.Entry<String, WebSocket> entry : serverList.entrySet()) {
             if(entry.getValue() == webSocket) {
+                String serverName = entry.getKey();
+                String serverDisplayName = WebServer.getServerDataJson()
+                        .getJSONObject(serverName)
+                        .getJSONObject("serverData")
+                        .getString("displayServerName");
+                broadcastWithoutTarget(serverName, String.format("CLOSED %s %s", serverName, serverDisplayName));
                 serverList.remove( entry.getKey() );
                 System.out.println(entry.getKey() + " を削除しました");
                 break;
