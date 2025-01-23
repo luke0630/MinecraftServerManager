@@ -3,6 +3,7 @@ package org.manager;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.io.*;
