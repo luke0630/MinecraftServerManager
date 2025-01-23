@@ -39,7 +39,6 @@ public class WebServer {
                 String jsonResponse = "";
                 if ("POST".equals(exchange.getRequestMethod())) {
                     String requestBody = new String(exchange.getRequestBody().readAllBytes());
-                    System.out.println("Received data: " + requestBody);
 
                     String serverName = exchange.getRequestHeaders().getFirst("Server-Name");
 
