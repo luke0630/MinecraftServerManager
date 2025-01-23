@@ -132,13 +132,6 @@ public class LunchWebSocketServer extends WebSocketServer {
         super(new InetSocketAddress(port));
     }
 
-    public void sendMessageToAllClients(String message) {
-        for (WebSocket client : this.getConnections()) {
-            System.out.println(client.getRemoteSocketAddress());
-            client.send(message);
-        }
-    }
-
     public static void sendMessageToClient(String client, String message) {
         if(serverList.containsKey(client)) {
             serverList.get(client).send(message);
