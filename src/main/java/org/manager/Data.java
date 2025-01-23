@@ -3,8 +3,7 @@ package org.manager;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -12,7 +11,7 @@ public class Data {
     private Integer websocket_port;
 
     private Integer port;
-    public record serverInfo (String host, String port, String name) {}
+    public record serverInfo (String host, String port, String name, String displayName) {}
 
     @Getter
     private List<serverInfo> serverInfoList = new ArrayList<>();
