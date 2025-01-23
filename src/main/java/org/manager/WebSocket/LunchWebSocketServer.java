@@ -39,15 +39,51 @@ public class LunchWebSocketServer extends WebSocketServer {
     public void onMessage(org.java_websocket.WebSocket webSocket, String s) {
         System.out.println("websocket - Received message: " + s);
 
-        InetSocketAddress inetSocketAddress = webSocket.getRemoteSocketAddress();
+        JSONObject message = new JSONObject(s);
 
-        JSONObject jsonResult = new JSONObject(s);
-        String host = inetSocketAddress.getHostString();
-        String port = String.valueOf(jsonResult.getInt("port"));
+        WebSocketClient.MessageType type = WebSocketClient.MessageType.valueOf(message.getString("type"));
+        String content = message.getString("content");
 
-        Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
-        if(serverInfo != null) {
-            serverList.put(serverInfo.name(), webSocket);
+        String serverName = "";
+        String serverDisplayName = "";
+        if(type != WebSocketClient.MessageType.REGISTER) {
+            boolean contain = false;
+            for(Map.Entry<String, WebSocket> server : serverList.entrySet()) {
+                if(server.getValue() == webSocket) {
+                    serverName = server.getKey();
+                    serverDisplayName = WebServer.getServerDataJson().getJSONObject(serverName)
+                            .getJSONObject("serverData")
+                            .getString("displayServerName");
+                    contain = true;
+                    break;
+                }
+            }
+
+            if(!contain) {
+                webSocket.close(1000, "登録されていないサーバーからのリクエスト");
+                return;
+            }
+        }
+
+        switch (type) {
+            case REGISTER -> {
+                InetSocketAddress inetSocketAddress = webSocket.getRemoteSocketAddress();
+
+                JSONObject jsonResult = new JSONObject(content);
+                String host = inetSocketAddress.getHostString();
+                String port = String.valueOf(jsonResult.getInt("port"));
+
+                Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
+                if(serverInfo != null) {
+                    serverList.put(serverInfo.name(), webSocket);
+                    webSocket.send("send");
+                    String test = String.format("REGISTER %s %s", serverInfo.name(), serverInfo.displayName());
+                    broadcastWithoutTarget(serverName, test);
+                }
+            }
+            case STARTED -> {
+                broadcastWithoutTarget(serverName, String.format("STARTED %s %s", serverName, serverDisplayName));
+            }
         }
     }
 
