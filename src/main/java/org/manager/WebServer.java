@@ -12,10 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class WebServer {
-    public static class PlayerInfo {
-        String name = "";
-        String uuid = "";
-    }
+    @Getter
+    static JSONObject serverDataJson = new JSONObject();
 
     public static void startServer(int port) {
         HttpServer server;
@@ -30,7 +28,6 @@ public class WebServer {
         }
     }
 
-    static JSONObject serverDataJson = new JSONObject();
     static class StatusHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
