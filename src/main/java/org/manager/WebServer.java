@@ -5,12 +5,12 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
 import org.json.JSONObject;
+import org.manager.WebSocket.LunchWebSocketServer;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class WebServer {
     @Getter
@@ -158,47 +158,55 @@ public class WebServer {
     static class RegisterHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            if ("POST".equals(exchange.getRequestMethod())) {
-                InetSocketAddress inetSocketAddress = exchange.getRemoteAddress();
-                String requestBody = new String(exchange.getRequestBody().readAllBytes());
+            try {
+                if ("POST".equals(exchange.getRequestMethod())) {
+                    System.out.println(exchange.getResponseBody());
+                    InetSocketAddress inetSocketAddress = exchange.getRemoteAddress();
+                    String requestBody = new String(exchange.getRequestBody().readAllBytes());
 
-                JSONObject jsonResult = new JSONObject(requestBody);
-                String host = inetSocketAddress.getHostName();
-                String port = String.valueOf(jsonResult.getInt("port"));
+                    JSONObject jsonResult = new JSONObject(requestBody);
+                    String host = inetSocketAddress.getHostName();
+                    String port = String.valueOf(jsonResult.getInt("port"));
 
-                String response = "サーバーリストにあなたのサーバーアドレスは存在しなかったため認証されませんでした";
+                    String response = "サーバーリストにあなたのサーバーアドレスは存在しなかったため認証されませんでした";
 
-                Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
-                if(serverInfo != null) {
-                    // レスポンスでwebsocketのサーバーのアドレスを教える
-                    // クライアントのIPアドレスを取得
-                    InetAddress clientAddress = inetSocketAddress.getAddress();
+                    Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
+                    if(serverInfo != null) {
+                        // レスポンスでwebsocketのサーバーのアドレスを教える
+                        // クライアントのIPアドレスを取得
+                        InetAddress clientAddress = inetSocketAddress.getAddress();
+                        String websocketHost;
+                        // クライアントのアドレスがサーバーのローカルアドレスと一致する場合は localhost を使用
+                        if (clientAddress.isLoopbackAddress() || clientAddress.equals(InetAddress.getLocalHost())) {
+                            websocketHost = "localhost";
+                        } else {
+                            websocketHost = InetAddress.getLocalHost().getHostAddress();
+                        }
 
-                    // WebSocketサーバーのアドレスを準備
-                    InetSocketAddress websocketAddress = Main.getWebSocketServer().getAddress();
-                    String websocketHost;
-
-                    // クライアントのアドレスがサーバーのローカルアドレスと一致する場合は localhost を使用
-                    if (clientAddress.isLoopbackAddress() || clientAddress.equals(InetAddress.getLocalHost())) {
-                        websocketHost = "localhost";
-                    } else {
-                        websocketHost = websocketAddress.getAddress().getHostAddress();
+                        JSONObject serverAddress = new JSONObject();
+                        InetSocketAddress websocket_address = Main.getWebSocketServer().getAddress();
+                        serverAddress.put("host", websocketHost);
+                        serverAddress.put("port", websocket_address.getPort());
+                        serverAddress.put("name", serverInfo.name());
+                        serverAddress.put("displayName", serverInfo.displayName());
+                        response = serverAddress.toString();
                     }
 
-                    JSONObject serverAddress = new JSONObject();
-                    InetSocketAddress websocket_address = Main.getWebSocketServer().getAddress();
-                    serverAddress.put("host", websocketHost);
-                    serverAddress.put("port", websocket_address.getPort());
-                    serverAddress.put("name", serverInfo.name());
-                    response = serverAddress.toString();
-                }
-
-                exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
-                exchange.sendResponseHeaders(200, response.getBytes().length);
+                    exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
+                    byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
+                    exchange.sendResponseHeaders(200, responseBytes.length);
 
                 try (OutputStream os = exchange.getResponseBody()) {
                     os.write(response.getBytes());
                 }
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(responseBytes);
+                        os.flush();
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error occurred: " + e.getMessage());
+                exchange.sendResponseHeaders(500, 0);
             }
         }
     }
