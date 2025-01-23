@@ -59,7 +59,11 @@ public class WebServer {
                         jsonObject.put("isOnline", LunchWebSocketServer.isOnline(serverName));
                         serverDataJson.put(serverInfo.name(), jsonObject);
                     } else {
-                        System.out.println("サーバーリストに存在しないサーバーからのリクエストです");
+                        InetSocketAddress address = exchange.getRemoteAddress();
+                        System.out.printf("サーバーリストに存在しないサーバーからのリクエストなため無視します (%s:%d)%n",
+                                address.getAddress().getHostAddress(),
+                                address.getPort()
+                        );
                     }
                 } else {
                     jsonResponse = serverDataJson.toString();
