@@ -5,6 +5,6 @@
 # - ip:ポート:名前:表示名
 # 注意: "名前"に、日本語を割り当てないでください。エラーが発生します(表示名には可能)
 serverList:
-  - localhost:11111:main
+  - localhost:11111:main:mainServer
 port: 8888
 websocket-port: 10594
