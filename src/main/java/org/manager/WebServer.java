@@ -82,12 +82,12 @@ public class WebServer {
                     os.write(jsonResponse.getBytes());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 String response = "Internal server error.";
                 exchange.sendResponseHeaders(500, response.getBytes().length);
                 try (OutputStream os = exchange.getResponseBody()) {
                     os.write(response.getBytes());
                 }
+                throw new IOException(e);
             }
         }
     }
@@ -196,9 +196,6 @@ public class WebServer {
                     byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
                     exchange.sendResponseHeaders(200, responseBytes.length);
 
-                try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(response.getBytes());
-                }
                     try (OutputStream os = exchange.getResponseBody()) {
                         os.write(responseBytes);
                         os.flush();
