@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
 import org.json.JSONObject;
+import org.manager.WebApp.Backend.Application;
 import org.manager.WebSocket.LunchWebSocketServer;
 
 import java.io.*;
@@ -16,16 +17,23 @@ public class WebServer {
     @Getter
     static JSONObject serverDataJson = new JSONObject();
 
+    public static void updateInfo() {
+        Application.getWebsocketController().sendMessage(serverDataJson.toString());
+    }
+
     public static void startServer(int port) {
+
         for(Data.serverInfo info : Main.getData().getServerInfoList()) {
-            serverDataJson.put(info.name(), new JSONObject().put("isOnline", false));
+            JSONObject init = new JSONObject();
+            init.put("isOnline", false);
+            init.put("displayServerName", info.displayName());
+            serverDataJson.put(info.name(), init);
         }
         HttpServer server;
         try {
             server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext("/status", new StatusHandler());
             server.createContext("/register", new RegisterHandler());
-            server.createContext("/manager", new ManagerHandler());
             server.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -37,6 +45,10 @@ public class WebServer {
         public void handle(HttpExchange exchange) throws IOException {
             try {
                 String jsonResponse = "";
+
+                exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+                exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type, Server-Name");
                 if ("POST".equals(exchange.getRequestMethod())) {
                     String requestBody = new String(exchange.getRequestBody().readAllBytes());
 
@@ -57,7 +69,9 @@ public class WebServer {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("serverData", serverData);
                         jsonObject.put("isOnline", LunchWebSocketServer.isOnline(serverName));
-                        serverDataJson.put(serverInfo.name(), jsonObject);
+                        jsonObject.put("displayServerName", serverInfo.displayName());
+                        getServerDataJson().put(serverInfo.name(), jsonObject);
+                        updateInfo();
                     } else {
                         InetSocketAddress address = exchange.getRemoteAddress();
                         System.out.printf("サーバーリストに存在しないサーバーからのリクエストなため無視します (%s:%d)%n",
@@ -91,70 +105,6 @@ public class WebServer {
                     os.write(response.getBytes());
                 }
                 throw new IOException(e);
-            }
-        }
-    }
-    static class ManagerHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-//            JSONObject jsonObject = new JSONObject(serverDataJson);
-//
-//            StringBuilder htmlResponse = new StringBuilder();
-//            htmlResponse.append(
-//                    "<html>\n" +
-//                    "    <head>\n"
-//            );
-//
-//            try {
-//                for(String server_key : jsonObject.keySet()) {
-//                    JSONObject mainObject = (JSONObject) jsonObject.get(server_key);
-//                    htmlResponse.append(String.format("<h1>サーバー名: %s</h1>", server_key) );
-//
-//                    for(String key : mainObject.keySet()) {
-//                        JSONObject value = (JSONObject) mainObject.get(key);
-//                        switch(key) {
-//                            case "players" -> {
-//                                List<PlayerInfo> players = Reader.getPlayers(value);
-//
-//                                htmlResponse.append("<h2>プレイヤーリスト</h2>");
-//                                htmlResponse.append(String.format("<h3>プレイヤー数: %d</h3>", players.size()));
-//                                for(PlayerInfo info : players) {
-//                                    htmlResponse.append(String.format("<p>%s  /  UUID: %s</p>", info.name, info.uuid));
-//                                }
-//                            }
-//                            case "plugins" -> {
-//
-//                                htmlResponse.append("<h2>プラグインリスト</h2>");
-//                                for (Reader.pluginsInfo pluginInfo : Reader.getPlugins(value)) {
-//
-//                                    htmlResponse.append(String.format("<h3>名前 : %s</h3>\n", pluginInfo.name()));
-//                                    htmlResponse.append(String.format("<p>説明 : %s</p>\n", pluginInfo.description()));
-//                                    htmlResponse.append(String.format("<p>バージョン : %s</p>\n", pluginInfo.version()));
-//                                    htmlResponse.append(String.format("<p>作者 : %s</p>\n", pluginInfo.authors()));
-//                                    htmlResponse.append(String.format("<p>ウェブサイト : %s</p>\n", pluginInfo.website()));
-//                                    htmlResponse.append(String.format("<p>メインクラス : %s</p>\n", pluginInfo.main()));
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            } catch(Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            htmlResponse.append(
-//                    "    </body>\n" +
-//                    "</html>"
-//            );
-//
-//            // レスポンスを返す
-//            exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
-//            byte[] responseBytes = htmlResponse.toString().getBytes(StandardCharsets.UTF_8);
-            String responseBytes = "";
-
-            exchange.sendResponseHeaders(200, responseBytes.length());
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(responseBytes.toString().getBytes());
             }
         }
     }

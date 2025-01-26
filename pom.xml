@@ -17,6 +17,12 @@
 
     <build>
         <plugins>
+            <!-- Spring Boot Mavenプラグイン -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.4.2</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -88,6 +94,19 @@
             <groupId>org.luke.statusreporter</groupId>
             <artifactId>statusreporter</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <!-- Spring Boot Web依存関係 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.4.2</version>
+        </dependency>
+        <!-- Spring Boot Mavenプラグイン -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId> <!-- オプション: HTMLテンプレートエンジン -->
+            <version>3.4.2</version>
         </dependency>
     </dependencies>
 </project>

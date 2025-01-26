@@ -58,10 +58,12 @@ public class LunchWebSocketServer extends WebSocketServer {
                 String serverName = entry.getKey();
                 String serverDisplayName = WebServer.getServerDataJson()
                         .getJSONObject(serverName)
-                        .getJSONObject("serverData")
                         .getString("displayServerName");
                 broadcastWithoutTarget(serverName, String.format("CLOSED %s %s", serverName, serverDisplayName));
                 serverList.remove( entry.getKey() );
+                WebServer.getServerDataJson().getJSONObject(serverName).put("isOnline", false);
+                WebServer.getServerDataJson().getJSONObject(serverName).remove("serverData");
+                WebServer.updateInfo();
                 System.out.println(entry.getKey() + " を削除しました");
                 break;
             }
@@ -85,7 +87,6 @@ public class LunchWebSocketServer extends WebSocketServer {
                 if(server.getValue() == webSocket) {
                     serverName = server.getKey();
                     serverDisplayName = WebServer.getServerDataJson().getJSONObject(serverName)
-                            .getJSONObject("serverData")
                             .getString("displayServerName");
                     contain = true;
                     break;
@@ -97,6 +98,8 @@ public class LunchWebSocketServer extends WebSocketServer {
                 return;
             }
         }
+
+        WebServer.updateInfo();
 
         switch (type) {
             case REGISTER -> {
@@ -114,6 +117,7 @@ public class LunchWebSocketServer extends WebSocketServer {
                 }
             }
             case STARTED -> {
+                webSocket.send("send");
                 broadcastWithoutTarget(serverName, String.format("STARTED %s %s", serverName, serverDisplayName));
             }
         }

@@ -1,6 +1,7 @@
 package org.manager;
 
 import lombok.Getter;
+import org.manager.WebApp.Backend.Application;
 import org.manager.WebSocket.LunchWebSocketServer;
 
 public class Main {
@@ -13,5 +14,7 @@ public class Main {
         YamlWriter.createConfig();
         YamlWriter.readConfig(() -> WebServer.startServer(data.getPort()));
         webSocketServer = LunchWebSocketServer.startServer();
+
+        Application.main(args);
     }
 }
