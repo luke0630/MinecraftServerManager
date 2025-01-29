@@ -25,6 +25,17 @@ public class APIController {
         jsonObject.put("host", "localhost");
         jsonObject.put("port", address.getPort());
         return jsonObject.toString();
+    @GetMapping("/api/status")
+    public String getStatus() {
+        JSONObject serverDataJson = Main.getServerDataJson();
+        for(String serverName : serverDataJson.keySet()) {
+            boolean isOnline = Main.getWebSocketServer().isOnline(serverName);
+            serverDataJson.getJSONObject(serverName).put("isOnline", isOnline);
+            if(!isOnline) {
+                serverDataJson.getJSONObject(serverName).remove("serverData");
+            }
+        }
+        return serverDataJson.toString();
     }
     @GetMapping("/api/websocket-address")
     public String getApiWebsocketAddress(HttpServletRequest request) {
