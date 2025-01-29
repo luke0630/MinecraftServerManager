@@ -9,7 +9,8 @@ import org.luke.statusReporter.WebSocket.WebSocketClient;
 import org.manager.Data;
 import org.manager.Main;
 import org.manager.Utility;
-import org.manager.WebServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -17,6 +18,7 @@ import java.util.*;
 public class LunchWebSocketServer extends WebSocketServer {
     @Getter
     static Map<String, WebSocket> serverList = new HashMap<>();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static Boolean isOnline(String serverName) {
         return serverList.containsKey(serverName);
