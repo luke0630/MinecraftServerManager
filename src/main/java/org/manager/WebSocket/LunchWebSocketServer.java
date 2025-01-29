@@ -48,12 +48,6 @@ public class LunchWebSocketServer extends WebSocketServer {
 
     @Override
     public void onOpen(org.java_websocket.WebSocket webSocket, ClientHandshake clientHandshake) {
-        try {
-            Thread.sleep(1000);
-            webSocket.send("send");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
