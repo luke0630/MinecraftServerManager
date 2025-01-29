@@ -8,8 +8,6 @@ import java.util.*;
 @Getter
 @Setter
 public class Data {
-    private Integer websocket_port;
-
     private Integer port;
     public record serverInfo (String host, String port, String name, String displayName) {}
 
