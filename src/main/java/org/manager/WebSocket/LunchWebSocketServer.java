@@ -23,7 +23,7 @@ public class LunchWebSocketServer extends WebSocketServer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     Map<String, WebSocket> serverList = new HashMap<>();
 
-    public static Boolean isOnline(String serverName) {
+    public Boolean isOnline(String serverName) {
         return serverList.containsKey(serverName);
     }
 
