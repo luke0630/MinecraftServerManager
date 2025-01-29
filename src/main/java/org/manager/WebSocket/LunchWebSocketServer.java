@@ -77,53 +77,57 @@ public class LunchWebSocketServer extends WebSocketServer {
 
     @Override
     public void onMessage(org.java_websocket.WebSocket webSocket, String s) {
-        System.out.println("websocket - Received message: " + s);
+        MessageDataClient client = new Gson().fromJson(s, MessageDataClient.class);
 
-        JSONObject message = new JSONObject(s);
+        MessageType.MessageClient type = client.type;
+        JSONObject content = new JSONObject(client.content);
 
-        WebSocketClient.MessageType type = WebSocketClient.MessageType.valueOf(message.getString("type"));
-        JSONObject content = message.getJSONObject("content");
+        if(type == MessageType.MessageClient.REGISTER) {
+            Register(webSocket, content);
+        } else {
+            ServerNameData serverNameData = isAllowedServer(webSocket);
+            if(serverNameData != null) {
+                String serverName = serverNameData.name;
+                String serverDisplayName = serverNameData.displayName;
 
-        String serverName = "";
-        String serverDisplayName = "";
-        if(type != WebSocketClient.MessageType.REGISTER) {
-            boolean contain = false;
-            for(Map.Entry<String, WebSocket> server : serverList.entrySet()) {
-                if(server.getValue() == webSocket) {
-                    serverName = server.getKey();
-                    serverDisplayName = WebServer.getServerDataJson().getJSONObject(serverName)
-                            .getString("displayServerName");
-                    contain = true;
-                    break;
+                switch (type) {
+                    case SEND_INFO -> {
+                        JSONObject jsonObject = Main.getServerDataJson().getJSONObject(serverName);
+                        jsonObject.put("isOnline", true);
+
+                        jsonObject.put("serverData",
+                                content
+                        );
+                        broadcastWithoutTarget(
+                                serverName,
+                                MessageUtility.getResultResponse(MessageType.MessageServer.UPDATE_INFO,
+                                        new JSONObject()
+                                )
+                        );
+                    }
+                    case STARTED -> {
+                        for(Data.serverInfo info : Main.getData().getServerInfoList()) {
+                            if(info.name().equals(serverName)) {
+                                logger.info(
+                                        String.format(
+                                                "%s(%s) が起動しました (%s:%s)",
+                                                serverDisplayName,
+                                                serverName,
+                                                info.host(),
+                                                info.port()
+                                        )
+                                );
+                                break;
+                            }
+                        }
+                        sendUpdateWithoutTarget(
+                                MessageType.MessageServer.UPDATE_STARTED,
+                                serverName,
+                                serverDisplayName
+                        );
+                    }
                 }
-            }
-
-            if(!contain) {
-                webSocket.close(1000, "登録されていないサーバーからのリクエスト");
-                return;
-            }
-        }
-
-        WebServer.updateInfo();
-
-        switch (type) {
-            case REGISTER -> {
-                InetSocketAddress inetSocketAddress = webSocket.getRemoteSocketAddress();
-
-                String host = inetSocketAddress.getHostString();
-                String port = String.valueOf(content.getInt("port"));
-
-                Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
-                if(serverInfo != null) {
-                    serverList.put(serverInfo.name(), webSocket);
-                    webSocket.send("send");
-                    String test = String.format("REGISTER %s %s", serverInfo.name(), serverInfo.displayName());
-                    broadcastWithoutTarget(serverName, test);
-                }
-            }
-            case STARTED -> {
-                webSocket.send("send");
-                broadcastWithoutTarget(serverName, String.format("STARTED %s %s", serverName, serverDisplayName));
+                Main.getApiWebsocketServer().sendMessage();
             }
         }
     }
