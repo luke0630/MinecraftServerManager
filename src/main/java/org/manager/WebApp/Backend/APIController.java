@@ -17,14 +17,34 @@ public class APIController {
         String host = request.getRemoteAddr();
         String port = String.valueOf(jsonResult.getInt("port"));
 
-    @GetMapping("/websocket-address")
-    public String getWebsocketAddress(HttpServletRequest request) {
-        JSONObject jsonObject = new JSONObject();
-        var address = Application.websocketController.getAddress();
+        Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
 
-        jsonObject.put("host", "localhost");
-        jsonObject.put("port", address.getPort());
-        return jsonObject.toString();
+        if(serverInfo != null) {
+            JSONObject jsonObject = new JSONObject();
+
+            // クライアントのアドレスがサーバーのローカルアドレスと一致する場合は localhost を使用
+            String websocketHost;
+            try {
+                if (InetAddress.getByName(host).isLoopbackAddress() || InetAddress.getByName(host).equals(InetAddress.getLocalHost())) {
+                    websocketHost = "localhost";
+                } else {
+                    websocketHost = InetAddress.getLocalHost().getHostAddress();
+                }
+            } catch (UnknownHostException e) {
+                logger.error(e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("");
+            }
+
+            jsonObject.put("host", websocketHost);
+            jsonObject.put("port", Main.getWebSocketServer().getPort());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(jsonObject.toString());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("");
+    }
+
     @GetMapping("/api/status")
     public String getStatus() {
         JSONObject serverDataJson = Main.getServerDataJson();
