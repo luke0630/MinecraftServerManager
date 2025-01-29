@@ -148,5 +148,16 @@ public class LunchWebSocketServer extends WebSocketServer {
 
         System.out.println("WebSocket server started on port " + server.getPort());
         return server;
+    public void sendUpdateWithoutTarget(MessageType.MessageServer messageServer, String serverName, String displayName) {
+        broadcastWithoutTarget(
+                serverName,
+                MessageUtility.getResultResponse(messageServer,
+                        new JSONObject()
+                                .put("name", serverName)
+                                .put("displayName", displayName)
+                )
+        );
+    }
+}
     }
 }
