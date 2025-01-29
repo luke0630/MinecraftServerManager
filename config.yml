@@ -1,0 +1,9 @@
+# serverList format - host:port:displayName
+# enter minecraft server's ip and port on serverList
+# serverList format:
+# - ip:port:name:DisplayName
+# - ip:ポート:名前:表示名
+# 注意: "名前"に、日本語を割り当てないでください。エラーが発生します(表示名には可能)
+serverList:
+  - 192.168.0.10:12121:main:メインサーバー
+port: 8844
