@@ -152,9 +152,25 @@ public class LunchWebSocketServer extends WebSocketServer {
         }
     }
 
-    public static LunchWebSocketServer startServer() {
-        LunchWebSocketServer server = new LunchWebSocketServer(Main.getData().getWebsocket_port());
-        server.start();
+    private ServerNameData isAllowedServer(WebSocket webSocket) {
+        for(Map.Entry<String, WebSocket> server : serverList.entrySet()) {
+            if(server.getValue() == webSocket) {
+                String serverName = server.getKey();
+                String serverDisplayName = Main.getServerDataJson().getJSONObject(serverName)
+                        .getString("displayServerName");
+                return new ServerNameData(
+                        serverName,
+                        serverDisplayName
+                );
+            }
+        }
+
+        webSocket.close(1000, "登録されていないサーバーからのリクエスト");
+        return null;
+    }
+
+    public void Register(WebSocket webSocket, JSONObject content) {
+        InetSocketAddress inetSocketAddress = webSocket.getRemoteSocketAddress();
 
         String host = inetSocketAddress.getHostString();
         String port = String.valueOf(content.getInt("port"));
