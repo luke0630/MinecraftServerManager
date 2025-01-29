@@ -129,7 +129,7 @@ public class LunchWebSocketServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-        System.out.println("Server started successfully");
+
     }
 
     public LunchWebSocketServer(int port) {
