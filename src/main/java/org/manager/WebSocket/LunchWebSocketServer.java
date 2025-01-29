@@ -142,11 +142,7 @@ public class LunchWebSocketServer extends WebSocketServer {
 
     }
 
-    public LunchWebSocketServer(int port) {
-        super(new InetSocketAddress(port));
-    }
-
-    public static void sendMessageToClient(String client, String message) {
+    public void sendMessageToClient(String client, String message) {
         if(serverList.containsKey(client)) {
             serverList.get(client).send(message);
         }
