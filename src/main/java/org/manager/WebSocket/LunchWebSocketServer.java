@@ -1,11 +1,14 @@
 package org.manager.WebSocket;
 
+import com.google.gson.Gson;
 import lombok.Getter;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
-import org.luke.statusReporter.WebSocket.WebSocketClient;
+import org.luke.statusReporter.Data.Message.MessageDataClient;
+import org.luke.statusReporter.Data.Message.MessageType;
+import org.luke.statusReporter.Utility.MessageUtility;
 import org.manager.Data;
 import org.manager.Main;
 import org.manager.Utility;
