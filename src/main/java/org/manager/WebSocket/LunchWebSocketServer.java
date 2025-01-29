@@ -55,7 +55,7 @@ public class LunchWebSocketServer extends WebSocketServer {
         for(Map.Entry<String, WebSocket> entry : serverList.entrySet()) {
             if(entry.getValue() == webSocket) {
                 String serverName = entry.getKey();
-                String serverDisplayName = WebServer.getServerDataJson()
+                String serverDisplayName = Main.getServerDataJson()
                         .getJSONObject(serverName)
                         .getString("displayServerName");
                 broadcastWithoutTarget(serverName, String.format("CLOSED %s %s", serverName, serverDisplayName));
