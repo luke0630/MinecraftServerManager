@@ -7,11 +7,6 @@ import org.manager.WebServer;
 
 import java.net.InetSocketAddress;
 
-// アプリにステータス情報を譲渡する
-public class WebsocketController extends WebSocketServer {
-
-    public WebsocketController(int port) {
-        super(new InetSocketAddress(port));
 public class APIWebsocketServer extends WebSocketServer {
     public APIWebsocketServer(InetSocketAddress address) {
         super(address);
