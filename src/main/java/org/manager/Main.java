@@ -9,6 +9,8 @@ public class Main {
     private static Data data = new Data();
     @Getter
     private static LunchWebSocketServer webSocketServer;
+    @Getter
+    private static JSONObject serverDataJson = new JSONObject();
 
     public static void main(String[] args) {
         YamlWriter.createConfig();

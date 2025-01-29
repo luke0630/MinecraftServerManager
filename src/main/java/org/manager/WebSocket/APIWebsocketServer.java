@@ -3,7 +3,7 @@ package org.manager.WebSocket;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.manager.WebServer;
+import org.manager.Main;
 
 import java.net.InetSocketAddress;
 
