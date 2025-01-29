@@ -26,4 +26,26 @@ public class APIController {
         jsonObject.put("port", address.getPort());
         return jsonObject.toString();
     }
+    @GetMapping("/api/websocket-address")
+    public String getApiWebsocketAddress(HttpServletRequest request) {
+        String host = request.getRemoteAddr();
+        JSONObject jsonObject = new JSONObject();
+
+        // クライアントのアドレスがサーバーのローカルアドレスと一致する場合は localhost を使用
+        String websocketHost;
+        try {
+            if (InetAddress.getByName(host).isLoopbackAddress() || InetAddress.getByName(host).equals(InetAddress.getLocalHost())) {
+                websocketHost = "localhost";
+            } else {
+                websocketHost = InetAddress.getLocalHost().getHostAddress();
+            }
+        } catch (UnknownHostException e) {
+            logger.error(e.getMessage());
+            return "{}";
+        }
+
+        jsonObject.put("host", websocketHost);
+        jsonObject.put("port", Main.getApiWebsocketServer().getPort());
+        return jsonObject.toString();
+    }
 }

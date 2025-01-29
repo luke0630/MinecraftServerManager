@@ -15,10 +15,13 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.util.*;
 
+@Getter
 public class LunchWebSocketServer extends WebSocketServer {
-    @Getter
-    static Map<String, WebSocket> serverList = new HashMap<>();
+    public LunchWebSocketServer(InetSocketAddress address) {
+        super(address);
+    }
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    Map<String, WebSocket> serverList = new HashMap<>();
 
     public static Boolean isOnline(String serverName) {
         return serverList.containsKey(serverName);
