@@ -2,6 +2,7 @@ package org.manager;
 
 import lombok.Getter;
 import org.manager.WebApp.Backend.Application;
+import org.manager.WebSocket.APIWebsocketServer;
 import org.manager.WebSocket.LunchWebSocketServer;
 
 public class Main {
@@ -9,6 +10,8 @@ public class Main {
     private static Data data = new Data();
     @Getter
     private static LunchWebSocketServer webSocketServer;
+    @Getter
+    private static APIWebsocketServer apiWebsocketServer;
     @Getter
     private static JSONObject serverDataJson = new JSONObject();
 
