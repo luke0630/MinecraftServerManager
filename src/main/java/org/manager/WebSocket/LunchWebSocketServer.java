@@ -58,12 +58,18 @@ public class LunchWebSocketServer extends WebSocketServer {
                 String serverDisplayName = Main.getServerDataJson()
                         .getJSONObject(serverName)
                         .getString("displayServerName");
-                broadcastWithoutTarget(serverName, String.format("CLOSED %s %s", serverName, serverDisplayName));
                 serverList.remove( entry.getKey() );
-                WebServer.getServerDataJson().getJSONObject(serverName).put("isOnline", false);
-                WebServer.getServerDataJson().getJSONObject(serverName).remove("serverData");
-                WebServer.updateInfo();
-                System.out.println(entry.getKey() + " を削除しました");
+                Main.getServerDataJson().getJSONObject(serverName).put("isOnline", false);
+                Main.getServerDataJson().getJSONObject(serverName).remove("serverData");
+                sendUpdateWithoutTarget(
+                        MessageType.MessageServer.UPDATE_CLOSED,
+                        serverName,
+                        serverDisplayName
+                );
+                Main.getApiWebsocketServer().sendMessage();
+                logger.info(
+                        entry.getKey() + " がクローズしました。"
+                );
                 break;
             }
         }
@@ -146,8 +152,32 @@ public class LunchWebSocketServer extends WebSocketServer {
         LunchWebSocketServer server = new LunchWebSocketServer(Main.getData().getWebsocket_port());
         server.start();
 
-        System.out.println("WebSocket server started on port " + server.getPort());
-        return server;
+        String host = inetSocketAddress.getHostString();
+        String port = String.valueOf(content.getInt("port"));
+
+        JSONObject register_result = new JSONObject();
+
+        Data.serverInfo serverInfo = Utility.isTargetServer(host, port);
+        if(serverInfo != null) {
+            logger.info(
+                    serverInfo.name() + " が登録されました。"
+            );
+            serverList.put(serverInfo.name(), webSocket);
+
+            register_result.put("name", serverInfo.name());
+
+            sendUpdateWithoutTarget(
+                    MessageType.MessageServer.UPDATE_REGISTERED,
+                    serverInfo.name(),
+                    serverInfo.displayName()
+            );
+
+            webSocket.send(MessageUtility.getResultResponse(MessageType.MessageServer.REGISTER_RESULT, register_result));
+        } else {
+            webSocket.close(1000, "不正なサーバーからのリクエスト");
+        }
+    }
+
     public void sendUpdateWithoutTarget(MessageType.MessageServer messageServer, String serverName, String displayName) {
         broadcastWithoutTarget(
                 serverName,
@@ -159,5 +189,13 @@ public class LunchWebSocketServer extends WebSocketServer {
         );
     }
 }
+
+class ServerNameData {
+    String name;
+    String displayName;
+
+    public ServerNameData(String name, String displayName) {
+        this.name = name;
+        this.displayName = displayName;
     }
 }
