@@ -56,7 +56,6 @@ public class YamlWriter {
                     }
                 }
                 resultData.setPort((int) data.get("port"));
-                resultData.setWebsocket_port((int) data.get("websocket-port"));
             }
 
             reader.close();
