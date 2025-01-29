@@ -12,16 +12,22 @@ public class WebsocketController extends WebSocketServer {
 
     public WebsocketController(int port) {
         super(new InetSocketAddress(port));
+public class APIWebsocketServer extends WebSocketServer {
+    public APIWebsocketServer(InetSocketAddress address) {
+        super(address);
     }
 
-    public void sendMessage(String json) {
-        this.broadcast(json);
+    public void sendMessage() {
+        for(var connection : this.getConnections()) {
+            connection.send(
+                    Main.getServerDataJson().toString()
+            );
+        }
     }
-
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        webSocket.send(WebServer.getServerDataJson().toString());
+        webSocket.send(Main.getServerDataJson().toString());
     }
 
     @Override
