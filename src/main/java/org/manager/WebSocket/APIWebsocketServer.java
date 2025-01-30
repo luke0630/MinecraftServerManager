@@ -4,12 +4,15 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.manager.Main;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
 public class APIWebsocketServer extends WebSocketServer {
-    public APIWebsocketServer(InetSocketAddress address) {
-        super(address);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public APIWebsocketServer(int port) {
+        super(new InetSocketAddress(port));
     }
 
     public void sendMessage() {
@@ -42,6 +45,6 @@ public class APIWebsocketServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-
+        logger.info("API用websocketが開始しました。 PORT:" + getPort());
     }
 }

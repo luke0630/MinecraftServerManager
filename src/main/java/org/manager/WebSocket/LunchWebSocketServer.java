@@ -20,11 +20,12 @@ import java.util.*;
 
 @Getter
 public class LunchWebSocketServer extends WebSocketServer {
-    public LunchWebSocketServer(InetSocketAddress address) {
-        super(address);
-    }
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     Map<String, WebSocket> serverList = new HashMap<>();
+
+    public LunchWebSocketServer(int port) {
+        super(new InetSocketAddress(port));
+    }
 
     public Boolean isOnline(String serverName) {
         return serverList.containsKey(serverName);
@@ -142,7 +143,7 @@ public class LunchWebSocketServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-
+        logger.info("メインwebsocketが開始しました。 PORT:" + getPort());
     }
 
     public void sendMessageToClient(String client, String message) {
