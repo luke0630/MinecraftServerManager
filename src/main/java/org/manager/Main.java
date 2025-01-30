@@ -5,7 +5,8 @@ import org.json.JSONObject;
 import org.manager.WebApp.Backend.Application;
 import org.manager.WebSocket.APIWebsocketServer;
 import org.manager.WebSocket.LunchWebSocketServer;
-import java.net.InetSocketAddress;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 public class Main {
     @Getter
@@ -27,14 +28,27 @@ public class Main {
                 serverDataJson.put(info.name(), init);
             }
 
-            InetSocketAddress address = new InetSocketAddress("localhost", 0);
-            webSocketServer = new LunchWebSocketServer(address);
-            webSocketServer.start();
+            try {
+                webSocketServer = new LunchWebSocketServer(getAvailablePort());
+                webSocketServer.start();
 
-            apiWebsocketServer = new APIWebsocketServer(address);
-            apiWebsocketServer.start();
+                Thread.sleep(1000);
+
+                apiWebsocketServer = new APIWebsocketServer(getAvailablePort());
+                apiWebsocketServer.start();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         Application.main(args);
+    }
+
+    public static int getAvailablePort() {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            return socket.getLocalPort();
+        } catch (IOException e) {
+            throw new RuntimeException("空いているポートを取得できませんでした", e);
+        }
     }
 }
