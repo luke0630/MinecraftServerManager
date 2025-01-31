@@ -13,5 +13,3 @@ MinecraftServerManager
 **PlaceholderAPIに対応**
 
 サーバー内から状態を確認することができます。
-
-## インストール
