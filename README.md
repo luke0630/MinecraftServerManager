@@ -14,8 +14,6 @@ MinecraftServerManager
 
 サーバー内から状態を確認できます。
 # インストール
-
----
 ## 1.jarファイルをダウンロード 
 
 Releasesから以下の最新バージョンをダウンロード  
@@ -65,6 +63,4 @@ MinecraftServerManagerのIP:ポート番号
 ポート番号には、MinecraftServerManagerのconfig.ymlで設定した`port`を使用してください。  
 アクセスして、サーバーの状態が表示されたら完了です。
 # ライセンス
-
----
 [MIT licensed](./LICENSE).
