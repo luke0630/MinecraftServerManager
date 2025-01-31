@@ -1,6 +1,7 @@
 package org.manager.WebSocket;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -81,7 +82,13 @@ public class LunchWebSocketServer extends WebSocketServer {
 
     @Override
     public void onMessage(org.java_websocket.WebSocket webSocket, String s) {
-        MessageDataClient client = new Gson().fromJson(s, MessageDataClient.class);
+        ObjectMapper mapper = new ObjectMapper();
+        MessageDataClient client;
+        try {
+            client = mapper.readValue(s, MessageDataClient.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         MessageType.MessageClient type = client.type;
         JSONObject content = new JSONObject(client.content);
