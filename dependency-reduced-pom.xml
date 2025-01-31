@@ -7,11 +7,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.4.2</version>
-      </plugin>
-      <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.3.0</version>
         <configuration>
@@ -33,6 +28,20 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <filters>
+            <filter>
+              <artifact>org.springframework*</artifact>
+              <includes>
+                <include>org/springframework/boot/**</include>
+                <include>org/springframework/context/**</include>
+                <include>org/springframework/http/**</include>
+                <include>org/springframework/web/**</include>
+                <include>org/springframework/core/**</include>
+              </includes>
+            </filter>
+          </filters>
+        </configuration>
       </plugin>
     </plugins>
   </build>
