@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.util.Enumeration;
 
 @RestController
 public class APIController {
@@ -34,16 +34,13 @@ public class APIController {
 
             // クライアントのアドレスがサーバーのローカルアドレスと一致する場合は localhost を使用
             String websocketHost;
-            try {
-                if (InetAddress.getByName(host).isLoopbackAddress() || InetAddress.getByName(host).equals(InetAddress.getLocalHost())) {
-                    websocketHost = "localhost";
-                } else {
-                    websocketHost = InetAddress.getLocalHost().getHostAddress();
-                }
-            } catch (UnknownHostException e) {
-                logger.error(e.getMessage());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("");
+            String clientIp = request.getRemoteAddr();
+            String serverIp = getServerIp();
+
+            if(clientIp.equals("127.0.0.1") || clientIp.equals("0:0:0:0:0:0:0:1") || clientIp.equals(serverIp)) {
+                websocketHost = "localhost";
+            } else {
+                websocketHost = serverIp;
             }
 
             jsonObject.put("host", websocketHost);
@@ -69,24 +66,40 @@ public class APIController {
     }
     @GetMapping("/api/websocket-address")
     public String getApiWebsocketAddress(HttpServletRequest request) {
-        String host = request.getRemoteAddr();
         JSONObject jsonObject = new JSONObject();
 
         // クライアントのアドレスがサーバーのローカルアドレスと一致する場合は localhost を使用
         String websocketHost;
-        try {
-            if (InetAddress.getByName(host).isLoopbackAddress() || InetAddress.getByName(host).equals(InetAddress.getLocalHost())) {
-                websocketHost = "localhost";
-            } else {
-                websocketHost = InetAddress.getLocalHost().getHostAddress();
-            }
-        } catch (UnknownHostException e) {
-            logger.error(e.getMessage());
-            return "{}";
+        String clientIp = request.getRemoteAddr();
+        String serverIp = getServerIp();
+
+        if(clientIp.equals("127.0.0.1") || clientIp.equals("0:0:0:0:0:0:0:1") || clientIp.equals(serverIp)) {
+            websocketHost = "localhost";
+        } else {
+            websocketHost = serverIp;
         }
 
         jsonObject.put("host", websocketHost);
         jsonObject.put("port", Main.getApiWebsocketServer().getPort());
         return jsonObject.toString();
+    }
+
+    public static String getServerIp() {
+        try {
+            for (Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+                 interfaces.hasMoreElements(); ) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                for (Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+                     addresses.hasMoreElements(); ) {
+                    InetAddress inetAddress = addresses.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        return inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return "127.0.0.1";  // 取得できなかった場合
     }
 }
