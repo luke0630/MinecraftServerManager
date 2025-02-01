@@ -20,7 +20,7 @@ Releasesから以下の最新バージョンをダウンロード
 ``MinecraftServerManager-x.x.x.jar``  
 <https://github.com/luke0630/MinecraftServerManager/releases>
 ## 2.起動
-以下のコマンドを実行し、起動します(x.x.xは書き換えてください)
+以下のコマンドを実行し、ダウンロードしたjarを起動します(x.x.xは書き換えてください)
 ````
 $ java -jar MinecraftServerManager-x.x.x.jar
 ````
@@ -58,7 +58,7 @@ addressにはMinecraftStatusManagerのアドレスを入力してください。
 ## 5.管理画面へアクセスする
 以下のURLでサイトにアクセスしてください。  
 ```
-MinecraftServerManagerのIP:ポート番号
+http://MinecraftServerManagerのIP:ポート番号
 ```  
 ポート番号には、MinecraftServerManagerのconfig.ymlで設定した`port`を使用してください。  
 アクセスして、サーバーの状態が表示されたら完了です。
