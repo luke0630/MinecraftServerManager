@@ -10,7 +10,7 @@ MinecraftServerManager
 > * バージョン、サーバーのステータス(起動中、稼働中)
 > * プラグインリスト(バージョン、概要、製作者、メインクラス)
 
-**PlaceholderAPIに対応**
+**PlaceholderAPIに対応(StatusReporterを使用)**
 
 サーバー内から状態を確認できます。
 # インストール
