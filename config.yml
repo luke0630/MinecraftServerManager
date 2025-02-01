@@ -7,3 +7,5 @@
 serverList:
   - 192.168.0.10:12121:main:メインサーバー
 port: 8844
+websocket-port: 8845
+websocket-api-port: 8846
