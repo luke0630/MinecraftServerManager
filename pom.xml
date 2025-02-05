@@ -86,10 +86,7 @@
                                         <filter>
                                             <artifact>*:*</artifact>
                                             <includes>
-                                                <include>org/manager/MinecraftServerManager/API/*</include>
-                                                <include>org/manager/MinecraftServerManager/Data/DynamicServerData.class</include>
-                                                <include>org/manager/MinecraftServerManager/Data/Message/**</include>
-                                                <include>org/manager/MinecraftServerManager/Utility/MessageUtility.class</include>
+                                                <include>org/manager/Library/**</include>
                                             </includes>
                                         </filter>
                                     </filters>

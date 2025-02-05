@@ -1,8 +1,8 @@
-package org.manager.Utility;
+package org.manager.Library.Utility;
 
 import lombok.experimental.UtilityClass;
 import org.json.JSONObject;
-import org.manager.Data.Message.MessageType;
+import org.manager.Library.Data.Message.MessageType;
 
 @UtilityClass
 public class MessageUtility {
