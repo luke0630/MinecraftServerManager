@@ -2,9 +2,9 @@ package org.manager.WebApp.Backend;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
-import org.manager.Data;
+import org.manager.Data.Data;
 import org.manager.Main;
-import org.manager.Utility;
+import org.manager.Utility.Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

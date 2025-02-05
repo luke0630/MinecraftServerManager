@@ -1,5 +1,6 @@
 package org.manager;
 
+import org.manager.Data.Data;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;

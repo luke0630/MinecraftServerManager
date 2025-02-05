@@ -2,6 +2,7 @@ package org.manager;
 
 import lombok.Getter;
 import org.json.JSONObject;
+import org.manager.Data.Data;
 import org.manager.WebApp.Backend.Application;
 import org.manager.WebSocket.APIWebsocketServer;
 import org.manager.WebSocket.LunchWebSocketServer;

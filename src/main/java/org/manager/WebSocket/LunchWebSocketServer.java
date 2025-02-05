@@ -7,12 +7,12 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
-import org.luke.statusReporter.Data.Message.MessageDataClient;
-import org.luke.statusReporter.Data.Message.MessageType;
-import org.luke.statusReporter.Utility.MessageUtility;
-import org.manager.Data;
+import org.manager.Data.Message.MessageDataClient;
+import org.manager.Data.Message.MessageType;
+import org.manager.Data.Data;
 import org.manager.Main;
-import org.manager.Utility;
+import org.manager.Utility.MessageUtility;
+import org.manager.Utility.Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

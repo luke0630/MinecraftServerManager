@@ -1,6 +1,8 @@
-package org.manager;
+package org.manager.Utility;
 
 import lombok.experimental.UtilityClass;
+import org.manager.Data.Data;
+import org.manager.Main;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
