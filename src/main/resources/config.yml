@@ -7,3 +7,5 @@
 serverList:
   - localhost:11111:main:mainServer
 port: 8844
+websocket-port: 8845
+websocket-api-port: 8846
