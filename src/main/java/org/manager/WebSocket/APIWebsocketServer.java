@@ -45,6 +45,6 @@ public class APIWebsocketServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-        logger.info("API用websocketが開始しました。 PORT:" + getPort());
+        logger.info("Started websocket server for API PORT:" + getPort());
     }
 }

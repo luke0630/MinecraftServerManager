@@ -150,7 +150,7 @@ public class LunchWebSocketServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-        logger.info("メインwebsocketが開始しました。 PORT:" + getPort());
+        logger.info("Started Main websocket server PORT:" + getPort());
     }
 
     public void sendMessageToClient(String client, String message) {
