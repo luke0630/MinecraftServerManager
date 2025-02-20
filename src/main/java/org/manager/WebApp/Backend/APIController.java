@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.*;
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 public class APIController {
@@ -81,6 +83,17 @@ public class APIController {
 
         jsonObject.put("host", websocketHost);
         jsonObject.put("port", Main.getApiWebsocketServer().getPort());
+        return jsonObject.toString();
+    }
+
+    @GetMapping("/api/all_players")
+    public String getAllPlayers() {
+        JSONObject jsonObject = new JSONObject();
+
+        var map = Main.getWebSocketServer().getPlayers();
+        for(Map.Entry<UUID, String> entry : map.entrySet()) {
+            jsonObject.put(entry.getKey().toString(), entry.getValue());
+        }
         return jsonObject.toString();
     }
 
