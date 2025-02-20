@@ -21,6 +21,7 @@ import java.util.*;
 
 @Getter
 public class LunchWebSocketServer extends WebSocketServer {
+    Map<UUID, String> players = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     Map<String, WebSocket> serverList = new HashMap<>();
 
@@ -136,6 +137,14 @@ public class LunchWebSocketServer extends WebSocketServer {
                                 serverName,
                                 serverDisplayName
                         );
+                        Main.getWebSocketServer().sendBroadcastMessage(MessageType.MessageServer.SEND_ALL_PLAYERS, new JSONObject());
+                    }
+                    case SEND_ALL_PLAYERS -> {
+                        for(String key : content.keySet()) {
+                            UUID uuid = UUID.fromString(key);
+                            String mcid = content.getString(key);
+                            players.put(uuid, mcid);
+                        }
                     }
                 }
                 Main.getApiWebsocketServer().sendMessage();
@@ -213,6 +222,11 @@ public class LunchWebSocketServer extends WebSocketServer {
                                 .put("name", serverName)
                                 .put("displayName", displayName)
                 )
+        );
+    }
+    public void sendBroadcastMessage(MessageType.MessageServer messageServer, JSONObject jsonObject) {
+        broadcast(
+                MessageUtility.getResultResponse(messageServer, jsonObject)
         );
     }
 }

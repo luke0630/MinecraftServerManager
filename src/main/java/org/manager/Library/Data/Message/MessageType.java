@@ -4,6 +4,7 @@ public class MessageType {
     public enum MessageServer {
         REGISTER_RESULT,
         SEND_INFO,
+        SEND_ALL_PLAYERS,
         UPDATE_REGISTERED,
         UPDATE_STARTED,
         UPDATE_CLOSED,
@@ -13,5 +14,6 @@ public class MessageType {
         REGISTER,
         STARTED,
         SEND_INFO,
+        SEND_ALL_PLAYERS,
     }
 }
